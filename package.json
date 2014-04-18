@@ -1,0 +1,37 @@
+{
+  "name": "ansi-to-html",
+  "version": "0.0.0",
+  "description": "Convert ansi escape codes to html",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha -R spec test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stayradiated/ansi-to-html.git"
+  },
+  "keywords": [
+    "escape",
+    "ansi",
+    "html",
+    "convert",
+    "bcat"
+  ],
+  "author": "George Czabania",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stayradiated/ansi-to-html/issues"
+  },
+  "homepage": "https://github.com/stayradiated/ansi-to-html",
+  "dependencies": {
+    "tinycolor2": "^0.9.17",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.18.2"
+  }
+}
