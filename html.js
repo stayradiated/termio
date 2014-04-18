@@ -4,23 +4,65 @@
 
 var _ = require('underscore');
 
+
+/*
+ * Constants
+ */
+
+var TAG = 'span';
+var PROP = 'class';
 var PREFIX = 'ansi-';
+var CLOSE = '</' + TAG + '>';
 
-var html = function (ansi) {
-  var output = '';
 
-  _.each(ansi, function (value, key) {
-    if (value === false) return;
+var Html = function () {
+  this.stack = [];
 
-    output += key;
-    if (value !== true) {
-      output += '-' + value;
-    }
-
-    output += ' ';
-  });
-
-  return '<span class="' + output.slice(0, -1) + '">';
+  // TODO: use a streaming interface instead
+  this.output = '';
 };
 
-module.exports = html;
+_.extend(Html.prototype, {
+
+  ansi: function (attrs) {
+
+    // check attrs
+
+    // check stack
+
+    // remove attrs & close spans
+    
+    // add attrs & create spans
+
+  },
+
+  text: function (text) {
+    this.pipe(text);
+  },
+
+  pipe: function (text) {
+    this.output += text;
+  }
+
+});
+
+
+
+/*
+ * Convert a single ansi attribute into an html tag
+ *
+ * - key (string)
+ * - value (boolean|string|number)
+ */
+
+var createTag = function (key, value) {
+  var output = key;
+
+  if (value !== true) {
+    output += '-' + value;
+  }
+
+  return '<'+TAG+' '+PROP+'="'+output+'">';
+};
+
+module.exports = Html;
