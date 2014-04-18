@@ -14,6 +14,11 @@ var PROP = 'class';
 var PREFIX = 'ansi-';
 var CLOSE_TAG = '</' + TAG + '>';
 
+var ORDER = [
+  'bold', 'italic', 'underline'
+];
+
+
 var Html = function () {
   this.stack = [];
 
@@ -24,35 +29,26 @@ var Html = function () {
 _.extend(Html.prototype, {
 
   ansi: function (ansi) {
+
+    // get ansi attrs
     var attrs = ansi.attrs();
-
-    // check attrs
-    var keys = _.keys(attrs);
-
-    var missing = _.difference(keys, this.stack);
-    var excess = _.difference(this.stack, keys);
-
-    console.log({
-      keys: keys,
-      missing: missing, 
-      excess: excess
-    });
-
-    // check stack
+    var keys = _.chain(attrs).keys().map(function (key) {
+      return getName(key, attrs[key]);
+    }).value();
 
     // remove attrs & close spans
-    if (excess.length) {
+    while((excess = _.difference(this.stack, keys)).length) {
       this.stack.pop();
       this.pipe(CLOSE_TAG);
     }
-    
+
+    var missing = _.difference(keys, this.stack).sort(sortKeys);
+
     // add attrs & create spans
     _.each(missing, function (key) {
       this.stack.push(key);
       this.pipe(createTag(key, attrs[key]));
     }, this);
-
-    console.log(this.stack);
 
   },
 
@@ -81,14 +77,17 @@ _.extend(Html.prototype, {
  * - value (boolean|string|number)
  */
 
-var createTag = function (key, value) {
-  var output = key;
+var createTag = function (classname) {
+  return '<'+TAG+' '+PROP+'="'+classname+'">';
+};
 
-  if (value !== true) {
-    output += '-' + value;
-  }
+var sortKeys = function (a, b) {
+  return ORDER.indexOf(a) - ORDER.indexOf(b);
+};
 
-  return '<'+TAG+' '+PROP+'="'+output+'">';
+var getName = function (key, value) {
+  if (value === true) return key;
+  return key + '-' + value;
 };
 
 module.exports = Html;

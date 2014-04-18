@@ -58,9 +58,66 @@ describe('html', function () {
     html.text('italic');
     test('</span></span><span class="italic">italic');
 
+    // remove italic
+    ansi.set(23);
+    html.ansi(ansi);
+    html.text('plain');
+    test('</span>plain');
+
     // close spans
     html.end();
-    console.log(html.output);
+
+  });
+
+  it('should add multiple attributse', function () {
+
+    ansi.set(1); // bold
+    ansi.set(3); // italic
+    ansi.set(4); // underline
+
+    html.ansi(ansi);
+    html.text('bold/italic/underline');
+    html.end();
+
+    test([
+      '<span class="bold">',
+        '<span class="italic">',
+          '<span class="underline">',
+            'bold/italic/underline',
+          '</span>',
+        '</span>',
+      '</span>'
+    ]);
+
+  });
+
+  it('should handle foreground/background colors', function () {
+
+    ansi.set(31);
+    html.ansi(ansi);
+    html.text('red text');
+
+    ansi.set(32);
+    html.ansi(ansi);
+    html.text('green text');
+
+    ansi.set(40);
+    html.ansi(ansi);
+    html.text('green text with a black background');
+
+    ansi.set(44);
+    html.ansi(ansi);
+    html.text('green text with a blue background');
+
+    html.end();
+
+    test([
+      '<span class="foreground-1">red text</span>',
+      '<span class="foreground-2">green text',
+        '<span class="background-0">green text with a black background</span>',
+        '<span class="background-4">green text with a blue background</span>',
+      '</span>'
+    ]);
 
   });
 
