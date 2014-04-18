@@ -4,9 +4,9 @@ var Ansi = function () {
 
   this.reset();
 
-  _.each(this.attrs, function (_, attr) {
+  _.each(this._attrs, function (_, attr) {
     this[attr] = function (value) {
-      this.attrs[attr] = value;
+      this._attrs[attr] = value;
     };
   }, this);
 
@@ -74,7 +74,7 @@ _.extend(Ansi.prototype, {
   },
 
   reset: function () {
-    this.attrs = {
+    this._attrs = {
       bold:       false,
       underline:  false,
       italic:     false,
@@ -84,6 +84,18 @@ _.extend(Ansi.prototype, {
       strike:     false,
       reverse:    false
     };
+  },
+
+  attrs: function () {
+    var output = {};
+    for (var key in this._attrs) {
+      if (this._attrs.hasOwnProperty(key));
+      var value = this._attrs[key];
+      if (value !== false) {
+        output[key] = value;
+      }
+    }
+    return output;
   }
 
 });

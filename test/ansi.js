@@ -20,18 +20,7 @@ describe('ansi', function () {
   });
 
   var test = function (options) {
-    var defaults = {
-      bold:       false,
-      underline:  false,
-      italic:     false,
-      background: false,
-      foreground: false,
-      conceal:    false,
-      strike:     false,
-      reverse:    false
-    };
-    _.extend(defaults, options);
-    assert.deepEqual(defaults, ansi.attrs);
+    assert.deepEqual(options || {}, ansi.attrs());
   };
 
   describe('reset', function () {

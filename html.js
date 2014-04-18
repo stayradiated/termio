@@ -12,8 +12,7 @@ var _ = require('underscore');
 var TAG = 'span';
 var PROP = 'class';
 var PREFIX = 'ansi-';
-var CLOSE = '</' + TAG + '>';
-
+var CLOSE_TAG = '</' + TAG + '>';
 
 var Html = function () {
   this.stack = [];
@@ -24,15 +23,36 @@ var Html = function () {
 
 _.extend(Html.prototype, {
 
-  ansi: function (attrs) {
+  ansi: function (ansi) {
+    var attrs = ansi.attrs();
 
     // check attrs
+    var keys = _.keys(attrs);
+
+    var missing = _.difference(keys, this.stack);
+    var excess = _.difference(this.stack, keys);
+
+    console.log({
+      keys: keys,
+      missing: missing, 
+      excess: excess
+    });
 
     // check stack
 
     // remove attrs & close spans
+    if (excess.length) {
+      this.stack.pop();
+      this.pipe(CLOSE_TAG);
+    }
     
     // add attrs & create spans
+    _.each(missing, function (key) {
+      this.stack.push(key);
+      this.pipe(createTag(key, attrs[key]));
+    }, this);
+
+    console.log(this.stack);
 
   },
 
@@ -42,6 +62,12 @@ _.extend(Html.prototype, {
 
   pipe: function (text) {
     this.output += text;
+  },
+
+  end: function () {
+    _.each(this.stack, function () {
+      this.pipe(CLOSE_TAG);
+    }, this);
   }
 
 });
