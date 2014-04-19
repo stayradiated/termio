@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var ansiStream = require('../ansi');
+var ansiStream = require('../stream/ansi');
 
 var STYLES = [ null,
   'bold', null, 'italic', 'underline', null, null, 'reverse', 'conceal', 'strike'

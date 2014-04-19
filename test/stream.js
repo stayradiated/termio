@@ -6,8 +6,8 @@
 
 var assert = require('chai').assert;
 
-var htmlStream = require('../html');
-var ansiStream = require('../ansi');
+var htmlStream = require('../stream/html');
+var ansiStream = require('../stream/ansi');
 
 describe('stream/pipe', function () {
 
