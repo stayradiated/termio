@@ -1,123 +1,154 @@
 var assert = require('chai').assert;
 var log = require('log_')('html', 'green');
 var _ = require('underscore');
+var htmlStream = require('../html');
 
-describe('html', function () {
+describe('stream/html', function () {
 
-  var Ansi = require('../ansi');
-  var Html = require('../html');
+  describe('#class', function () {
 
-  var ansi, html, _totalOutput;
+    var html, _textLast, _textTotal;
 
-  beforeEach(function () {
-    ansi = new Ansi();
-    html = new Html();
-    _totalOutput = '';
-  });
+    beforeEach(function () {
+      html = new htmlStream.Html();
+      _textLast = '';
+      _textTotal = '';
+    });
 
-  var test = function (string) {
-    if (_.isArray(string)) string = string.join('');
-    _totalOutput += string;
-    assert.equal(html.output, _totalOutput);
-  };
+    var end = function () {
+      var output = html.end();
+      _textLast = output;
+      _textTotal += output;
+      return output;
+    };
 
-  it('should export html classes', function () {
+    var write = function (obj) {
+      var output = html.write(obj);
+      _textLast = output;
+      _textTotal += output;
+      return output;
+    };
 
-    // nothing
-    html.ansi(ansi);
-    html.text('plain');
-    test('plain');
+    var test = function (expected, actual) {
+      if (_.isArray(expected)) expected = expected.join('');
+      assert.equal(actual !== undefined ? actual : _textLast, expected);
+    };
 
-    // bold
-    ansi.set(1);
-    html.ansi(ansi);
-    html.text('bold');
-    test('<span class="bold">bold');
+    var testAll = function (string) {
+      test(string, _textTotal);
+    };
 
-    // italic
-    ansi.set(3);
-    html.ansi(ansi);
-    html.text('bold/italic');
-    test('<span class="italic">bold/italic');
+    it('should export html classes', function () {
 
-    // underline
-    ansi.set(4);
-    html.ansi(ansi);
-    html.text('bold/italic/underline');
-    test('<span class="underline">bold/italic/underline');
+      // nothing
+      write({});
+      test('');
 
-    // remove underline
-    ansi.set(24);
-    html.ansi(ansi);
-    html.text('bold/italic');
-    test('</span>bold/italic');
+      // bold
+      write({ bold: true });
+      test('<span class="bold">');
 
-    // remove bold
-    ansi.set(21);
-    html.ansi(ansi);
-    html.text('italic');
-    test('</span></span><span class="italic">italic');
+      // italic
+      write({ bold: true, italic: true });
+      test('<span class="italic">');
 
-    // remove italic
-    ansi.set(23);
-    html.ansi(ansi);
-    html.text('plain');
-    test('</span>plain');
+      // underline
+      write({ bold: true, italic: true, underline: true });
+      test('<span class="underline">');
 
-    // close spans
-    html.end();
+      // remove underline
+      write({ bold: true, italic: true });
+      test('</span>');
 
-  });
+      // remove bold
+      write({italic: true });
+      test('</span></span><span class="italic">');
 
-  it('should add multiple attributse', function () {
+      // remove italic
+      write({});
+      test('</span>');
 
-    ansi.set(1); // bold
-    ansi.set(3); // italic
-    ansi.set(4); // underline
+      // close any open spans
+      end();
+      test('');
 
-    html.ansi(ansi);
-    html.text('bold/italic/underline');
-    html.end();
+    });
 
-    test([
-      '<span class="bold">',
-        '<span class="italic">',
-          '<span class="underline">',
-            'bold/italic/underline',
+    it('should add multiple attributse', function () {
+
+      write({
+        bold: true,
+        italic: true,
+        underline: true
+      });
+
+      end();
+
+      testAll([
+        '<span class="bold">',
+          '<span class="italic">',
+            '<span class="underline"></span>',
           '</span>',
+        '</span>'
+      ]);
+
+    });
+
+    it('should handle foreground/background colors', function () {
+
+      write({ foreground: 1 });
+      write({ foreground: 2 });
+      write({ foreground: 2, background: 8 });
+      write({ foreground: 2, background: 9 });
+      write({ foreground: 3, background: 9 });
+      end();
+
+      testAll([
+        '<span class="foreground-1"></span>',
+        '<span class="foreground-2">',
+          '<span class="background-8"></span>',
+          '<span class="background-9"></span>',
         '</span>',
-      '</span>'
-    ]);
+        '<span class="foreground-3">',
+          '<span class="background-9"></span>',
+        '</span>'
+      ]);
+
+    });
 
   });
 
-  it('should handle foreground/background colors', function () {
+  describe('#stream', function () {
 
-    ansi.set(31);
-    html.ansi(ansi);
-    html.text('red text');
+    var html;
 
-    ansi.set(32);
-    html.ansi(ansi);
-    html.text('green text');
+    beforeEach(function () {
+      html = htmlStream();
+    });
 
-    ansi.set(40);
-    html.ansi(ansi);
-    html.text('green text with a black background');
+    afterEach(function () {
+      html.end();
+    });
 
-    ansi.set(44);
-    html.ansi(ansi);
-    html.text('green text with a blue background');
+    var test = function (string) {
+      assert.deepEqual(html.read(), string);
+    };
 
-    html.end();
+    it('should output spans', function () {
 
-    test([
-      '<span class="foreground-1">red text</span>',
-      '<span class="foreground-2">green text',
-        '<span class="background-0">green text with a black background</span>',
-        '<span class="background-4">green text with a blue background</span>',
-      '</span>'
-    ]);
+      html.write({ bold: true });
+      test('<span class="bold">');
+
+      html.write({ italic: true });
+      test('</span><span class="italic">');
+
+      html.write({ underline: true });
+      test('</span><span class="underline">');
+
+      html.end();
+      test('</span>');
+
+    });
 
   });
 

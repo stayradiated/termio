@@ -3,6 +3,7 @@
  */
 
 var _ = require('underscore');
+var TransformStream = require('stream').Transform;
 
 
 /*
@@ -14,60 +15,74 @@ var PROP = 'class';
 var PREFIX = 'ansi-';
 var CLOSE_TAG = '</' + TAG + '>';
 
-var ORDER = [
-  'bold', 'italic', 'underline'
+var ATTR_ORDER = [
+  'bold', 'italic', 'underline', 'background', 'foreground'
 ];
+
+
+var createHtmlStream = function () {
+  var html = new Html();
+  var stream = new TransformStream({ objectMode: true });
+
+  stream._transform = function (chunk, encoding, done) {
+    stream.push(html.write(chunk));
+    done();
+  };
+
+  stream._flush = function (done) {
+    stream.push(html.end());
+    done();
+  };
+
+  return stream;
+};
 
 
 var Html = function () {
   this.stack = [];
-
-  // TODO: use a streaming interface instead
-  this.output = '';
 };
+
 
 _.extend(Html.prototype, {
 
-  ansi: function (ansi) {
+  write: function (attrs) {
+    var output = '';
 
     // get ansi attrs
-    var attrs = ansi.attrs();
-    var keys = _.chain(attrs).keys().map(function (key) {
+    var keys = _.keys(attrs).map(function (key) {
       return getName(key, attrs[key]);
-    }).value();
+    });
 
     // remove attrs & close spans
     while((excess = _.difference(this.stack, keys)).length) {
       this.stack.pop();
-      this.pipe(CLOSE_TAG);
+      output += CLOSE_TAG;
     }
 
-    var missing = _.difference(keys, this.stack).sort(sortKeys);
+    // get missing keys
+    var missing = _.chain(keys)
+      .difference(this.stack)
+      .sortBy(ATTR_ORDER.indexOf, ATTR_ORDER)
+      .value();
 
     // add attrs & create spans
     _.each(missing, function (key) {
       this.stack.push(key);
-      this.pipe(createTag(key, attrs[key]));
+      output += createTag(key, attrs[key]);
     }, this);
 
-  },
-
-  text: function (text) {
-    this.pipe(text);
-  },
-
-  pipe: function (text) {
-    this.output += text;
+    return output;
   },
 
   end: function () {
-    _.each(this.stack, function () {
-      this.pipe(CLOSE_TAG);
-    }, this);
+    var tags = _.reduce(this.stack, function (output) {
+      return output += CLOSE_TAG;
+    }, '');
+    this.stack.length = 0;
+    return tags;
   }
 
 });
-
 
 
 /*
@@ -81,13 +96,20 @@ var createTag = function (classname) {
   return '<'+TAG+' '+PROP+'="'+classname+'">';
 };
 
-var sortKeys = function (a, b) {
-  return ORDER.indexOf(a) - ORDER.indexOf(b);
-};
+
+/*
+ * Convert an attribute key,value pair into a string
+ *
+ * - key (string)
+ * - value
+ * > string
+ */
 
 var getName = function (key, value) {
   if (value === true) return key;
   return key + '-' + value;
 };
 
-module.exports = Html;
+
+module.exports = createHtmlStream;
+module.exports.Html = Html;
