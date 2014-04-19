@@ -1,42 +1,86 @@
 var _ = require('underscore');
+var ReadableStream = require('stream').Readable;
+var TransformStream = require('stream').Transform;
 
-var TEXT = 1;
-var ANSI = 2;
+var parseStream = function () {
+  var stream = TransformStream();
 
-var escapeAnsi = function (m) {
-  if (m.trim().length) m = '0';
-  // remove trailing semicolon if present
-  if (m[m.length - 1] === ';') m = m.slice(0, -1);
-  _.each(m.split(';'), function (code) {
-    console.log(code);
-  });
+  stream._transform = function (chunk, encoding, done) {
+  };
+
+  return stream;
 };
 
-var tokens = [
-  // characters to remove
-  [/^\x08+/, ''],
+var Parse = function (stream) {
+};
 
-  // set foreground/background
-  [/^\x1b\[38;5;(\d+)m/, setForeground],
-  [/^\x1b\[48;5;(\d+)m/, setBackground],
+_.extend(Parse.prototype, {
 
-  // escape codes
-  [/^\x1b\[((?:\d{1,3};?)+|)m/, escapeAnsi],
+  replaceAnsi: function (codes) {
+    console.log('>>>', codes, '<<<');
+    return { type: 'ansi', value: codes };
+  },
 
-  // malformed sequences
-  [/^\x1b\[?[\d;]{0,3}/, ''],
+  replaceText: function (text) {
+    return { type: 'text', value: text };
+  },
 
-  // real text
-  [/^([^\x1b\x08]+)/m, text]
-];
+  replaceEscape: function () {
+     return { type: 'text', value: 'ESC' };
+  },
 
-var len = tokens.length;
+  tokens: [
 
-while ((size = text.size) > 0) {
-  for (var i = 0; i < len; i++) {
-    var pattern = tokens[i][0];
-    var replace = tokens[i][1];
+    // ansi escape code
+    [/^\x1b\[[^@-_]*[@-_]/, 'replaceAnsi'],
+
+    // real text
+    [/^([^\x1b]+)/m, 'replaceText'],
+
+    // everything else
+    // [/^\x1b/, 'replaceEscape']
+
+  ],
+
+  process: function (name, output) {
+    var fn = this[name];
+    return function (_, data, index) {
+      output.push(fn(_));
+      return '';
+    };
+  },
+
+  write: function (input) {
+    var output = [];
+
+    var size;
+    while ((size = input.length) > 0) {
+
+      console.log('input', JSON.stringify(input));
+
+      // go through each token in order
+      // check if we have a match
+      //   if so, replace and start again
+      // else
+      //   keep going
+
+      for_loop:
+      for (var i = 0; i < this.tokens.length; i++) {
+        var token = this.tokens[i];
+        if (token[0].test(input)) {
+          input = input.replace(token[0], this.process(token[1], output));
+          break for_loop;
+        }
+      }
+
+      if (input.length === size) break;
+    }
+
+    return output;
   }
-  if (text.size === size) break;
-}
 
+});
+
+
+module.exports = parseStream;
+module.exports.Parse = Parse;
