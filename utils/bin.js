@@ -1,4 +1,4 @@
-var ansiToHtmlStream = require('./index');
+var ansiToHtmlStream = require('../index');
 
 var stream = ansiToHtmlStream();
 

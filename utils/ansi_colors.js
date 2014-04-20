@@ -13,7 +13,7 @@ var pad = function (num) {
 };
 
 var line, color;
-var SPACE = '    ';
+var SPACE = '   ';
 
 console.log('\nMain Colors:');
 
