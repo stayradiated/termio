@@ -139,6 +139,28 @@ describe('stream/ansi', function () {
 
     });
 
+    describe('should support 256 colors', function () {
+
+      it('foreground', function () {
+        _.range(0, 256).forEach(function (i) {
+          ansi.write(38);
+          ansi.write(5);
+          ansi.write(i);
+          test({ foreground: i });
+        });
+      });
+
+      it('background', function () {
+        _.range(0, 256).forEach(function (i) {
+          ansi.write(48);
+          ansi.write(5);
+          ansi.write(i);
+          test({ background: i });
+        });
+      });
+
+    });
+
   });
 
   describe('#stream', function () {

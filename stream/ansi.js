@@ -20,11 +20,18 @@ var createAnsiStream = function () {
 
   var ansi = new Ansi();
   var stream = new TransformStream({objectMode: true});
+  var last = {};
 
   stream._transform = function (chunk, encoding, done) {
     if (! _.isArray(chunk)) chunk = [chunk];
     _.each(chunk, ansi.write, ansi);
-    stream.push(ansi.attrs());
+
+    var attrs = ansi.attrs();
+    if (! _.isEqual(attrs, last)) {
+      last = attrs;
+      stream.push(attrs);
+    }
+
     done();
   };
 
@@ -34,6 +41,8 @@ var createAnsiStream = function () {
 
 var Ansi = function () {
   this._attrs = {};
+  this._foreground = 0;
+  this._background = 0;
   this.reset();
 };
 
@@ -50,6 +59,30 @@ _.extend(Ansi.prototype, {
    */
 
   write: function (value) {
+
+    if (this._foreground > 1) {
+      this.set('foreground', value);
+      this._foreground = 0;
+      return this;
+    }
+
+    if (this._background > 1) {
+      this.set('background', value);
+      this._background = 0;
+      return this;
+    }
+
+    if (value === 5) {
+      if (this._foreground === 1) {
+        this._foreground = 2;
+        return this;
+      }
+      else if (this._background === 1) {
+        this._background = 2;
+        return this;
+      }
+    }
+
     switch (value) {
 
       case 0: this.reset();                   break;
@@ -68,7 +101,9 @@ _.extend(Ansi.prototype, {
       case 28: this.set('conceal', false);    break;
       case 29: this.set('strike', false);     break;
 
+      case 38: this._foreground = 1;          break;
       case 39: this.set('foreground', false); break;
+      case 48: this._background = 1;          break;
       case 49: this.set('background', false); break;
 
       default:

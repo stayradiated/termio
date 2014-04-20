@@ -12,24 +12,39 @@ var pad = function (num) {
   return ' ' + num + spaces + ' ';
 };
 
-// for (var i = 0; i < 36; i++) {
-//   var code = (group * 36) + (16 + i);
-//   line += esc([48, 5, code]) + ' ' + code + ' ' + esc(0);
-//   if (i % 6 === 5) {
-//     console.log(line);
-//     line = '';
-//   }
-// }
-// console.log(' ');
+var line, color;
+var SPACE = '    ';
 
-var line = '';
-for (var column = 0; column < 6; column++) {
-  for (var row = 0; row < 6; row++) {
-    for (var group = 0; group < 6; group++) {
-      var color = (group * 36) + 16 + (row * 6) + column;
-      line += esc([48, 5, color]) + pad(color) + esc(0);
+console.log('\nMain Colors:');
+
+line = '';
+for (var row = 0; row < 2; row++) {
+  for (var i = 0; i < 8; i++) {
+    line += esc([48, 5, i + (row * 8)]) + SPACE + esc(0);
+  }
+  console.log(line + '\n' + line);
+  line = '';
+}
+
+console.log('\nColor Cubes:');
+
+line = '';
+for (var row = 0; row < 6; row++) {
+  for (var group = 0; group < 6; group++) {
+    for (var column = 0; column < 6; column++) {
+      color = (group * 36) + 16 + (row * 6) + column;
+      line += esc([48, 5, color]) + SPACE + esc(0);
     }
   }
-  line += '\n';
+  console.log(line + '\n' + line);
+  line = '';
 }
-console.log(line);
+
+console.log('\nShades:');
+
+line = '';
+for (var shade = 0; shade < 24; shade++) {
+  color = shade + 232;
+  line += esc([48, 5, color]) + SPACE + esc(0);    
+}
+console.log(line + '\n' + line);

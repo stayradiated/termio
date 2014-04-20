@@ -9,8 +9,8 @@ for (var red = 0; red < 6; red++) {
       var r = red   > 0 ? red   * 40 + 55 : 0;
       var g = green > 0 ? green * 40 + 55 : 0;
       var b = blue  > 0 ? blue  * 40 + 55 : 0;
-      styles['background-' + index]  = 'color:' + tinycolor({r:r,g:g,b:b}).toHexString();
-      styles['foreground-' + index]  = 'background-color:' + tinycolor({r:r,g:g,b:b}).toHexString();
+      styles['foreground-' + index]  = 'color:' + tinycolor({r:r,g:g,b:b}).toHexString();
+      styles['background-' + index]  = 'background-color:' + tinycolor({r:r,g:g,b:b}).toHexString();
     }
   }
 }
@@ -23,6 +23,10 @@ for (var gray = 0; gray < 24; gray++) {
 }
 
 
+var css = '';
+
 for (var key in styles) {
-  console.log('.' + key + '{' + styles[key] + '}');
+  css += '.' + key + '{' + styles[key] + '}';
 }
+
+module.exports = css;
