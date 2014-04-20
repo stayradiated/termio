@@ -72,6 +72,9 @@ _.extend(Token.prototype, {
     var output = [];
     var len;
 
+    // make sure it is not a buffer
+    input = input.toString();
+
     while ((len = input.length) > 0) {
 
       forLoop:
