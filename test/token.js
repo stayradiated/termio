@@ -21,8 +21,6 @@ describe('stream/token', function () {
     var test = function (actual, expected) {
       if (_.isArray(actual)) actual = actual.join('');
       var output = token.write(actual);
-      // console.log(actual);
-      // console.log(JSON.stringify(output, null, 2));
       assert.deepEqual(output, expected);
     };
 
@@ -288,28 +286,33 @@ describe('stream/token', function () {
 
   describe('#stream', function () {
 
-    var token;
+    var token, tests, _i;
 
     beforeEach(function () {
       token = tokenStream();
+      token.on('readable', function () {
+        assert.deepEqual(token.read(), tests[_i++]);
+      });
+      _i = 0;
+      tests = [];
     });
 
     var test = function (expected) {
-      assert.deepEqual(token.read(), expected);
+      tests.push(expected);
     };
 
     it('should write one value at a time', function () {
-      token.write(esc(32) + 'green text');
       test({ type: 'ansi', value: [32] });
       test({ type: 'text', value: 'green text' });
+      token.write(esc(32) + 'green text');
 
-      token.write(esc(1) + 'bold green text');
       test({ type: 'ansi', value: [1] });
       test({ type: 'text', value: 'bold green text' });
+      token.write(esc(1) + 'bold green text');
 
-      token.write(esc(0) + 'plain text');
       test({ type: 'ansi', value: [0] });
       test({ type: 'text', value: 'plain text' });
+      token.write(esc(0) + 'plain text');
     });
 
   });
