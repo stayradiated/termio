@@ -116,6 +116,25 @@ describe('stream/html', function () {
 
     });
 
+    it('should handle reverse video', function () {
+      write({ reverse: true });
+      write({ reverse: true, background: 2 });
+      write({ reverse: true, background: 2, foreground: 7 });
+      write({ background: 2, foreground: 7 });
+      end();
+
+      testAll([
+        '<span class="reverse">',
+          '<span class="background-2">',
+            '<span class="foreground-7"></span>',
+          '</span>',
+        '</span>',
+        '<span class="background-2">',
+          '<span class="foreground-7"></span>',
+        '</span>'
+      ]);
+    });
+
   });
 
   describe('#stream', function () {

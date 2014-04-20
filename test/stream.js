@@ -4,6 +4,7 @@
  * raw text -> [tokenizer] -> [ansi -> [html] -> output
  */
 
+var _ = require('underscore');
 var assert = require('chai').assert;
 
 var htmlStream = require('../stream/html');
@@ -11,7 +12,7 @@ var ansiStream = require('../stream/ansi');
 
 describe('stream/pipe', function () {
 
-  var ansi, html, text, _i, tests;
+  var ansi, html, text, _i, _closed, _onClose, tests;
 
   beforeEach(function () {
     ansi = ansiStream();
@@ -20,15 +21,28 @@ describe('stream/pipe', function () {
     
     tests = [];
     _i = 0;
+    _closed = false;
+    _onClose = _.identity;
 
-    html.on('readable', function () {
-      var data = html.read();
+    html.on('data', function (data) {
       var i = _i++;
       assert.equal(data, tests[i]);
     });
+
+    html.on('end', function () {
+      _closed = true;
+      _onClose();
+    });
+
+  });
+
+  afterEach(function (done) {
+    _onClose = done;
+    if (_closed) done();
   });
 
   var test = function (string) {
+    if (_.isArray(string)) string = string.join('');
     tests.push(string);
   };
 
@@ -70,6 +84,36 @@ describe('stream/pipe', function () {
 
     ansi.write(36);
     test('</span></span><span class="background-2"><span class="foreground-6">');
+
+    ansi.end();
+    test('</span></span>');
+
+  });
+
+  it('should handle reverse video', function () {
+
+    ansi.write(7);
+    ansi.write(31);
+    ansi.write(107);
+    ansi.write(27);
+    ansi.end();
+
+    test(['<span class="reverse">',
+            '<span class="foreground-bg">',
+              '<span class="background-fg">']);
+    test([    '</span>',
+              '<span class="background-1">']);
+    test([    '</span>',
+            '</span>',
+            '<span class="background-1">',
+              '<span class="foreground-15">']);
+    test([    '</span>',
+            '</span>',
+          '</span>',
+          '<span class="background-15">',
+            '<span class="foreground-1">']);
+    test([  '</span>',
+          '</span>']);
 
   });
 

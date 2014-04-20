@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 var ansiStream = require('../stream/ansi');
 
 var STYLES = [ null,
-  'bold', null, 'italic', 'underline', null, null, 'reverse', 'conceal', 'strike'
+  'bold', null, 'italic', 'underline', null, null, null, 'conceal', 'strike'
 ];
 
 var COLORS = [
@@ -159,6 +159,49 @@ describe('stream/ansi', function () {
         });
       });
 
+    });
+
+    describe('reverse video', function () {
+
+      it('should reverse foreground and background', function () {
+        ansi.write(7);
+        test({
+          reverse: true,
+          background: 'fg',
+          foreground: 'bg',
+        });
+
+        ansi.write(37);
+        test({
+          reverse: true,
+          background: 7,
+          foreground: 'bg'
+        });
+
+        ansi.write(40);
+        test({
+          reverse: true,
+          background: 7,
+          foreground: 0
+        });
+      });
+    });
+
+    it('should revert properly', function () {
+      ansi.write(7);
+      ansi.write(31);
+      ansi.write(107);
+      test({
+        reverse: true,
+        background: 1,
+        foreground: 15
+      });
+
+      ansi.write(27);
+      test({
+        background: 15,
+        foreground: 1
+      });
     });
 
   });

@@ -2,9 +2,16 @@ var _ = require('underscore');
 
 var TransformStream = require('stream').Transform;
 
-var ATTRIBUTES   =       [
-  'bold', 'underline', 'italic', 'background', 'foreground', 'conceal', 'strike', 'reverse'
-];
+var ATTRIBUTES = {
+  bold: false,
+  underline: false,
+  italic: false,
+  background: 'bg',
+  foreground: 'fg',
+  conceal: false,
+  strike: false,
+  reverse: false
+};
 
 
 /*
@@ -93,18 +100,18 @@ _.extend(Ansi.prototype, {
       case 8: this.set('conceal', true);      break;
       case 9: this.set('strike', true);       break;
 
-      case 21: this.set('bold', false);       break;
-      case 22: this.set('bold', false);       break;
-      case 23: this.set('italic', false);     break;
-      case 24: this.set('underline', false);  break;
-      case 27: this.set('reverse', false);    break;
-      case 28: this.set('conceal', false);    break;
-      case 29: this.set('strike', false);     break;
+      case 21: this.reset('bold');            break;
+      case 22: this.reset('bold');            break;
+      case 23: this.reset('italic');          break;
+      case 24: this.reset('underline');       break;
+      case 27: this.reset('reverse');         break;
+      case 28: this.reset('conceal');         break;
+      case 29: this.reset('strike');          break;
 
       case 38: this._foreground = 1;          break;
-      case 39: this.set('foreground', false); break;
+      case 39: this.reset('foreground');      break;
       case 48: this._background = 1;          break;
-      case 49: this.set('background', false); break;
+      case 49: this.reset('background');      break;
 
       default:
         if (value >= 30 && value <= 37) {
@@ -144,12 +151,16 @@ _.extend(Ansi.prototype, {
    * Ansi.prototype.reset
    *
    * Set all attribute values to false
+   *
+   * - [attr] (string) : optional. only reset that attribute.
    */
 
-  reset: function () {
-    _.each(ATTRIBUTES, function (attr) {
-      this._attrs[attr] = false;
-    }, this);
+  reset: function (attr) {
+    if (attr) {
+      this._attrs[attr] = ATTRIBUTES[attr];
+    } else {
+      this._attrs = _.clone(ATTRIBUTES);
+    }
     return this;
   },
 
@@ -165,10 +176,16 @@ _.extend(Ansi.prototype, {
 
   attrs: function () {
     var output = {};
-    _.each(ATTRIBUTES, function (attr) {
+    _.each(ATTRIBUTES, function (defaultVal, attr) {
       var value = this._attrs[attr];
-      if (value !== false) output[attr] = value;
+      if (value !== defaultVal) output[attr] = value;
     }, this);
+
+    if (output.reverse) {
+      output.foreground = this._attrs.background;
+      output.background = this._attrs.foreground;
+    }
+
     return output;
   }
 
