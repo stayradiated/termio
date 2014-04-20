@@ -1,6 +1,10 @@
 var tinycolor = require('tinycolor2');
 
-var styles = {};
+var styles = {
+  bold: 'font-weight: bold',
+  underline: 'text-decoration: underline',
+  italic: 'font-style: italic'
+};
 
 for (var red = 0; red < 6; red++) {
   for (var green = 0; green < 6; green++) {
