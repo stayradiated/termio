@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var termio = require('../index');
-var wrapper = require('../utils/wrapper');
 
-process.stdin.pipe(termio()).pipe(wrapper()).pipe(process.stdout);
+process.stdin
+  .pipe(termio({ header: true }))
+  .pipe(process.stdout);
