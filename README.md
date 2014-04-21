@@ -23,7 +23,7 @@ var Termio = require('termio');
 process.stdin.pipe(termio()).pipe(process.stdout);
 ```
 
-## Specs
+## HTML Notes
 
 - Everything is a `<span>`
 - There are no inline `style` attributes. All styles must be applied with CSS.
@@ -35,21 +35,21 @@ process.stdin.pipe(termio()).pipe(process.stdout);
 | ---- | ---------------  | ------
 | 0    |                  | reset all styles
 | 1    | `bold`           | use bold font and bright colors
-| 2    |                  | *not supported*
+| 2    |                  | *N/A*
 | 3    | `italic`         | use italic font
 | 4    | `underline`      | underline text
-| 5    |                  | *not supported*
-| 6    |                  | *not supported*
+| 5    |                  | *N/A*
+| 6    |                  | *N/A*
 | 7    | `reverse`        | switch background and foreground colors
 | 8    | `conceal`        | display nothing
 | 9    | `strike`         | line through text
-| ...  |                  | *not supported*
+| ...  |                  |
 | 21   |                  | remove bold
 | 22   |                  | remove bold
 | 23   |                  | remove italic
 | 24   |                  | remove underline
-| 25   |                  | *not supported*
-| 26   |                  | *not supported*
+| 25   |                  | *N/A*
+| 26   |                  | *N/A*
 | 27   |                  | remove reverse
 | 28   |                  | remove conceal
 | 29   |                  | remove strike
@@ -72,8 +72,8 @@ process.stdin.pipe(termio()).pipe(process.stdout);
 | 46   | `background-6`   | set background to 6
 | 47   | `background-7`   | set background to 7
 | 48   | `background-n`   | set background to n
-| 49   | `background-fg`  | set background to fg
-| ...  |                  | *not supported*
+| 49   | `background-bg`  | set background to bg
+| ...  |                  |
 | 90   | `foreground-8`   | set foreground to 8
 | 91   | `foreground-9`   | set foreground to 9
 | 92   | `foreground-10`  | set foreground to 10
@@ -82,7 +82,7 @@ process.stdin.pipe(termio()).pipe(process.stdout);
 | 95   | `foreground-13`  | set foreground to 13
 | 96   | `foreground-14`  | set foreground to 14
 | 97   | `foreground-15`  | set foreground to 15
-| ...  |                  | *not supported*
+| ...  |                  |
 | 100  | `background-8`   | set background to 8
 | 101  | `background-9`   | set background to 9
 | 102  | `background-10`  | set background to 10
