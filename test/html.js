@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var log = require('log_')('html', 'green');
 var _ = require('underscore');
-var htmlStream = require('../stream/html');
+var htmlStream = require('../lib/html');
 
 describe('stream/html', function () {
 

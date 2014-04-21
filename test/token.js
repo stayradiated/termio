@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var tokenStream = require('../stream/token');
+var tokenStream = require('../lib/token');
 
 describe('stream/token', function () {
 

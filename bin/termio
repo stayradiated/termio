@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+var termio = require('../index');
+process.stdin.pipe(termio()).pipe(process.stdout);

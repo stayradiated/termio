@@ -4,11 +4,11 @@ var Stream = require('stream');
 var Splinter = require('splinter');
 var through = require('through');
 
-var ansiStream = require('./stream/ansi');
-var htmlStream = require('./stream/html');
-var tokenStream = require('./stream/token');
+var ansiStream = require('./lib/ansi');
+var htmlStream = require('./lib/html');
+var tokenStream = require('./lib/token');
 
-var ansiToHtmlStream = function () {
+var termioStream = function () {
   var stream = Stream.Transform({ objectMode: true });
 
   var ansi = ansiStream();
@@ -47,4 +47,4 @@ stream.push('</style></head><body class="background-bg foreground-fg"><pre>');
   return stream;
 };
 
-module.exports = ansiToHtmlStream;
+module.exports = termioStream;

@@ -1,9 +1,11 @@
 {
-  "name": "ansi-to-html",
-  "version": "0.0.0",
-  "description": "Convert ansi escape codes to html",
+  "name": "termio",
+  "version": "0.0.1",
+  "description": "Perfectly convert ANSI escape codes into HTML.",
   "main": "index.js",
   "directories": {
+    "bin": "bin",
+    "lib": "lib",
     "test": "test"
   },
   "scripts": {
@@ -11,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/stayradiated/ansi-to-html.git"
+    "url": "git://github.com/stayradiated/termio.git"
   },
   "keywords": [
     "escape",
@@ -23,9 +25,9 @@
   "author": "George Czabania",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stayradiated/ansi-to-html/issues"
+    "url": "https://github.com/stayradiated/termio/issues"
   },
-  "homepage": "https://github.com/stayradiated/ansi-to-html",
+  "homepage": "https://github.com/stayradiated/termio",
   "dependencies": {
     "tinycolor2": "^0.9.17",
     "underscore": "^1.6.0",

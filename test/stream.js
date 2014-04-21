@@ -7,8 +7,8 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 
-var htmlStream = require('../stream/html');
-var ansiStream = require('../stream/ansi');
+var htmlStream = require('../lib/html');
+var ansiStream = require('../lib/ansi');
 
 describe('stream/pipe', function () {
 
