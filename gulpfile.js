@@ -1,20 +1,25 @@
+/*
+ * Compile termio into a single for file with browserify.
+ * For use only with the tests.
+ */
+
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var browserify = require('gulp-browserify');
 
-gulp.task('default', ['browser', 'client']);
+gulp.task('default', ['termio', 'tests']);
 
-gulp.task('client', function () {
+gulp.task('termio', function () {
   return gulp.src('index.js')
     .pipe(browserify({
-      standalone: 'ansiToHtmlStream'
+      standalone: 'Termio'
     }))
-    .pipe(rename('browser.js'))
-    .pipe(gulp.dest('./'));
+    .pipe(rename('termio.js'))
+    .pipe(gulp.dest('./test/browser'));
 });
 
-gulp.task('browser', function () {
+gulp.task('tests', function () {
   return gulp.src('test/browser/tests.js')
     .pipe(browserify())
     .pipe(rename('browser.js'))
