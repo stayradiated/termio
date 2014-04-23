@@ -5,23 +5,24 @@
 
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var rename = require('gulp-rename');
-var browserify = require('gulp-browserify');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
 
 gulp.task('default', ['termio', 'tests']);
 
 gulp.task('termio', function () {
-  return gulp.src('index.js')
-    .pipe(browserify({
-      standalone: 'Termio'
-    }))
-    .pipe(rename('termio.js'))
+  var bundleStream = browserify('./index.js').bundle({
+    standalone: 'Termio'
+  });
+
+  return bundleStream
+    .pipe(source('termio.js'))
     .pipe(gulp.dest('./test/browser'));
 });
 
 gulp.task('tests', function () {
-  return gulp.src('test/browser/tests.js')
-    .pipe(browserify())
-    .pipe(rename('browser.js'))
+  var bundleStream = browserify('./test/browser/tests.js').bundle();
+  return bundleStream
+    .pipe(source('browser.js'))
     .pipe(gulp.dest('./test/browser'));
 });
