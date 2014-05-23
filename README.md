@@ -13,6 +13,8 @@ npm install termio
 
 ```
 ls --color=always | termio > ls.html
+
+termio < tmux.output > tmux.html
 ```
 
 ## JS API Usage

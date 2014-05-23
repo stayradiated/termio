@@ -29,10 +29,11 @@
   },
   "homepage": "https://github.com/stayradiated/termio",
   "dependencies": {
-    "tinycolor2": "^0.9.17",
-    "underscore": "^1.6.0",
+    "commander": "^2.2.0",
     "splinter": "0.0.1",
-    "through": "^2.3.4"
+    "through": "^2.3.4",
+    "tinycolor2": "^0.9.17",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "browserify": "^3.44.2",

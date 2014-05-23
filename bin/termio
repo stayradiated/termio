@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 
+var program = require('commander');
+var package = require('../package');
 var termio = require('../index');
 
+program
+  .version(package.version)
+  .option('-w, --wrapper', 'Wrap output with html header and stylesheet')
+  .parse(process.argv);
+  
 process.stdin
-  .pipe(termio({ header: true }))
+  .pipe(termio({ header: program.wrapper }))
   .pipe(process.stdout);
