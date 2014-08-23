@@ -20,7 +20,7 @@ var termioStream = function (opts) {
     return chunk.type;
   });
 
-  var textOutput = splinter.match('text').pipe(through(function (chunk) {
+  splinter.match('text').pipe(through(function (chunk) {
     this.queue(_.escape(chunk.value));
   })).on('data', function (data) {
     stream.push(data);

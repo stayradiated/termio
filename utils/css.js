@@ -1,4 +1,4 @@
-var tinycolor = require('tinycolor2');
+var Colr = require('colr');
 
 var styles = {
   bold: 'font-weight: bold',
@@ -13,8 +13,8 @@ for (var red = 0; red < 6; red++) {
       var r = red   > 0 ? red   * 40 + 55 : 0;
       var g = green > 0 ? green * 40 + 55 : 0;
       var b = blue  > 0 ? blue  * 40 + 55 : 0;
-      styles['foreground-' + index]  = 'color:' + tinycolor({r:r,g:g,b:b}).toHexString();
-      styles['background-' + index]  = 'background-color:' + tinycolor({r:r,g:g,b:b}).toHexString();
+      styles['foreground-' + index]  = 'color:' + Colr.fromRgb(r, g, b).toHex();
+      styles['background-' + index]  = 'background-color:' + Colr.fromRgb(r, g, b).toHex();
     }
   }
 }
@@ -22,8 +22,8 @@ for (var red = 0; red < 6; red++) {
 for (var gray = 0; gray < 24; gray++) {
   var index = gray + 232;
   var l = gray * 10 + 8; // luminosity
-  styles['foreground-' + index] = 'color:' + tinycolor({r:l,g:l,b:l}).toHexString();
-  styles['background-' + index] = 'background-color:' + tinycolor({r:l,g:l,b:l}).toHexString();
+  styles['foreground-' + index] = 'color:' + Colr.fromRgb(r, g, b).toHex();
+  styles['background-' + index] = 'background-color:' + Colr.fromRgb(r, g, b).toHex();
 }
 
 

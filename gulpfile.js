@@ -4,16 +4,15 @@
  */
 
 var gulp = require('gulp');
-var concat = require('gulp-concat');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 
 gulp.task('default', ['termio', 'tests']);
 
 gulp.task('termio', function () {
-  var bundleStream = browserify('./index.js').bundle({
+  var bundleStream = browserify('./index.js', {
     standalone: 'Termio'
-  });
+  }).bundle();
 
   return bundleStream
     .pipe(source('termio.js'))
