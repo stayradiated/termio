@@ -22,8 +22,8 @@ for (var red = 0; red < 6; red++) {
 for (var gray = 0; gray < 24; gray++) {
   var index = gray + 232;
   var l = gray * 10 + 8; // luminosity
-  styles['foreground-' + index] = 'color:' + Colr.fromRgb(r, g, b).toHex();
-  styles['background-' + index] = 'background-color:' + Colr.fromRgb(r, g, b).toHex();
+  styles['foreground-' + index] = 'color:' + Colr.fromGrayscale(l).toHex();
+  styles['background-' + index] = 'background-color:' + Colr.fromGrayscale(l).toHex();
 }
 
 
