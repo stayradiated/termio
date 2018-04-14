@@ -1,3 +1,2 @@
 /node_modules
-test/browser/termio.js
-test/browser/browser.js
+/dist

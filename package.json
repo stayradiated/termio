@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Perfectly convert ANSI escape codes into HTML.",
   "main": "index.js",
-  "directories": {
-    "bin": "bin",
-    "lib": "lib",
-    "test": "test"
+  "bin": {
+    "termio": "./bin/termio"
   },
   "scripts": {
-    "test": "mocha -R spec test"
+    "build": "pkg-clean && rollup -c",
+    "prepublish": "npm run build",
+    "test": "pkg-test",
+    "flow": "pkg-flow",
+    "coverage": "pkg-coverage",
+    "lint": "pkg-lint"
   },
   "repository": {
     "type": "git",
@@ -29,18 +32,36 @@
   },
   "homepage": "https://github.com/stayradiated/termio",
   "dependencies": {
-    "colr": "^1.2.0",
-    "commander": "^2.2.0",
-    "splinter": "0.0.1",
-    "through": "^2.3.4",
-    "underscore": "^1.7.0"
+    "colr": "^1.2.2",
+    "commander": "^2.15.1",
+    "escape-html": "^1.0.3",
+    "fast-equals": "^1.2.1",
+    "splinter": "1.0.0",
+    "through": "^2.3.8",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "browserify": "^5.11.0",
-    "chai": "^1.9.1",
-    "gulp": "^3.8.7",
-    "log_": "0.0.4",
-    "mocha": "^1.21.4",
-    "vinyl-source-stream": "^0.1.1"
+    "@mishguru/package": "^2.2.2",
+    "mocha": "^5.1.0",
+    "rollup": "^0.57.1"
+  },
+  "babel": {
+    "presets": [
+      "flow",
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   }
 }

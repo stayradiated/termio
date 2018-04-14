@@ -6,23 +6,29 @@ Termio
 ## Installation
 
 ```
-npm install termio
+npm install -g termio
 ```
 
 ## Terminal Usage
 
 ```
 ls --color=always | termio > ls.html
+```
 
+```
+tmux capture-pane -eJ
+tmux save-buffer tmux.output
 termio < tmux.output > tmux.html
 ```
 
 ## JS API Usage
 
 ```javascript
-var Termio = require('termio');
+const Termio = require('termio')
 
-process.stdin.pipe(termio()).pipe(process.stdout);
+process.stdin
+  .pipe(termio())
+  .pipe(process.stdout)
 ```
 
 ## HTML Notes
