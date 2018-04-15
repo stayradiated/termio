@@ -15,6 +15,8 @@ npm install -g termio
 ls --color=always | termio > ls.html
 ```
 
+### Capture data from TMUX
+
 ```
 tmux capture-pane -eJ
 tmux save-buffer tmux.output
