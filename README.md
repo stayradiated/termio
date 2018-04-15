@@ -3,7 +3,7 @@ Termio
 
 > Perfectly convert ANSI escape codes to HTML.
 
-![Example Screenshot](./_termio.png)
+![Example Screenshot](./_termio.png#1)
 
 ## Installation
 
