@@ -1,5 +1,3 @@
-import { Transform as TransformStream } from 'stream'
-
 const getNumbers = (string) => {
   const matches = string.match(/\d+/g)
   if (Array.isArray(matches)) {
@@ -62,19 +60,6 @@ const replaceAndPush = (fn, output) => {
 }
 
 class Token {
-  static createStream () {
-    const token = new Token()
-    const stream = new TransformStream({ objectMode: true })
-
-    stream._transform = function (chunk, encoding, done) {
-      const output = token.write(chunk)
-      output.forEach((value) => stream.push(value))
-      done()
-    }
-
-    return stream
-  }
-
   write (data) {
     const output = []
     let input = data.toString()

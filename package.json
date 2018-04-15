@@ -36,13 +36,11 @@
     "commander": "^2.15.1",
     "escape-html": "^1.0.3",
     "fast-equals": "^1.2.1",
-    "splinter": "1.0.0",
-    "through": "^2.3.8",
-    "underscore": "^1.8.3"
+    "pull-stream": "^3.6.7",
+    "pull-stream-to-stream": "^1.3.4"
   },
   "devDependencies": {
     "@mishguru/package": "^2.2.2",
-    "mocha": "^5.1.0",
     "rollup": "^0.57.1"
   },
   "babel": {

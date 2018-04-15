@@ -1,5 +1,3 @@
-import { Transform as TransformStream } from 'stream'
-
 const TAG = 'span'
 const PROP = 'class'
 const CLOSE_TAG = `</${TAG}>`
@@ -28,23 +26,6 @@ const getName = (key, value) => {
 class Html {
   constructor () {
     this.stack = []
-  }
-
-  static createStream () {
-    const html = new Html()
-    const stream = new TransformStream({ objectMode: true })
-
-    stream._transform = function (chunk, encoding, done) {
-      stream.push(html.write(chunk))
-      done()
-    }
-
-    stream._flush = function (done) {
-      stream.push(html.end())
-      done()
-    }
-
-    return stream
   }
 
   write (attrs) {

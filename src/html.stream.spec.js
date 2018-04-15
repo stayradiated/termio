@@ -1,32 +1,55 @@
 import test from 'ava'
+import pull from 'pull-stream'
 
-import Html from './html'
+import createHtmlStream from './html.stream'
 
-test('bold', (t) => {
-  const stream = Html.createStream()
-  stream.write({ bold: true })
-  t.is(stream.read(), '<span class="bold">')
-  stream.end()
+test.cb('bold', (t) => {
+  pull.pull(
+    pull.values([{
+      bold: true
+    }]),
+    createHtmlStream(),
+    pull.collect((err, values) => {
+      t.is(err, null)
+      t.deepEqual(values, [
+        '<span class="bold">',
+        '</span>'
+      ])
+      t.end()
+    })
+  )
 })
 
-test('italic', (t) => {
-  const stream = Html.createStream()
-  stream.write({ italic: true })
-  t.is(stream.read(), '<span class="italic">')
-  stream.end()
+test.cb('italic', (t) => {
+  pull.pull(
+    pull.values([{
+      italic: true
+    }]),
+    createHtmlStream(),
+    pull.collect((err, values) => {
+      t.is(err, null)
+      t.deepEqual(values, [
+        '<span class="italic">',
+        '</span>'
+      ])
+      t.end()
+    })
+  )
 })
 
-test('underline', (t) => {
-  const stream = Html.createStream()
-  stream.write({ underline: true })
-  t.is(stream.read(), '<span class="underline">')
-  stream.end()
-})
-
-test('auto close tag', (t) => {
-  const stream = Html.createStream()
-  stream.write({ bold: true })
-  stream.end()
-  t.is(stream.read(), '<span class="bold">')
-  t.is(stream.read(), '</span>')
+test.cb('underline', (t) => {
+  pull.pull(
+    pull.values([{
+      underline: true
+    }]),
+    createHtmlStream(),
+    pull.collect((err, values) => {
+      t.is(err, null)
+      t.deepEqual(values, [
+        '<span class="underline">',
+        '</span>'
+      ])
+      t.end()
+    })
+  )
 })

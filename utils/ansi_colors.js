@@ -1,7 +1,9 @@
-var _ = require('underscore');
+#!/usr/bin/env node
 
 var esc = function (num) {
-  if (_.isArray(num)) num = num.join(';');
+  if (Array.isArray(num)) {
+    num = num.join(';');
+  }
   return '\x1b[' + num + 'm';
 };
 

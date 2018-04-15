@@ -1,23 +1,45 @@
 import test from 'ava'
+import pull from 'pull-stream'
 
-import Ansi from './ansi'
+import createAnsiStream from './ansi.stream'
 
-test('able to write to stream', (t) => {
-  const stream = Ansi.createStream()
-  stream.write(1)
-  t.deepEqual(stream.read(), {
-    bold: true
-  })
-  stream.end()
+test.cb('able to write to stream', (t) => {
+  pull.pull(
+    pull.values([
+      1,
+    ]),
+    createAnsiStream(),
+    pull.collect((err, values) => {
+      t.is(err, null)
+      t.deepEqual(values, [{
+        bold: true
+      }])
+      t.end()
+    })
+  )
 })
 
-test('write multiple values to the stream in an array', (t) => {
-  const stream = Ansi.createStream()
-  stream.write([1, 3, 4])
-  t.deepEqual(stream.read(), {
-    bold: true,
-    italic: true,
-    underline: true
-  })
-  stream.end()
+test.cb('write multiple values to the stream in an array', (t) => {
+  pull.pull(
+    pull.values([
+      1,
+      3,
+      4,
+    ]),
+    createAnsiStream(),
+    pull.collect((err, values) => {
+      t.is(err, null)
+      t.deepEqual(values, [{
+        bold: true,
+      }, {
+        bold: true,
+        italic: true,
+      }, {
+        bold: true,
+        italic: true,
+        underline: true
+      }])
+      t.end()
+    })
+  )
 })

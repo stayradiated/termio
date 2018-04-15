@@ -1,4 +1,3 @@
-import { Transform as TransformStream } from 'stream'
 import { shallowEqual } from 'fast-equals'
 
 const ATTRIBUTES = {
@@ -18,30 +17,6 @@ class Ansi {
     this._foreground = 0
     this._background = 0
     this.reset()
-  }
-
-  static createStream () {
-    const ansi = new Ansi()
-    const stream = new TransformStream({ objectMode: true })
-    let last = {}
-
-    stream._transform = (chunk, encoding, done) => {
-      if (Array.isArray(chunk)) {
-        chunk.forEach((code) => ansi.write(code))
-      } else {
-        ansi.write(chunk)
-      }
-
-      const attrs = ansi.attrs()
-      if (!shallowEqual(attrs, last)) {
-        last = attrs
-        stream.push(attrs)
-      }
-
-      done()
-    }
-
-    return stream
   }
 
   /*
