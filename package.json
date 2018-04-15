@@ -1,6 +1,6 @@
 {
   "name": "termio",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Perfectly convert ANSI escape codes into HTML.",
   "main": "index.js",
   "bin": {
